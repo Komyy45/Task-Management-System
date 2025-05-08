@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+
+# Angular
+Client/Task_Management_System/dist/
+Client/Task_Management_System/.angular/cache/
+Client/Task_Management_System/.sass-cache/
+Client/Task_Management_System/connect.lock
+Client/Task_Management_System/coverage/
+Client/Task_Management_System/libpeerconnection.log
+Client/Task_Management_System/testem.log
+Client/Task_Management_System/typings/
+
+# Environment files
+.env
+Client/Task_Management_System/src/environments/*.js
+Client/Task_Management_System/src/environments/*.js.map
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# System Files
+.DS_Store
+Thumbs.db
