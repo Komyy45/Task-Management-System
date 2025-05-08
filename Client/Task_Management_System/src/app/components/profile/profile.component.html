@@ -1,0 +1,277 @@
+<div class="profile-container">
+  <!-- Loading spinner -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="profile-header" @fadeIn>
+    <div class="profile-header-content">
+      <h1>My Profile</h1>
+      <p>Manage your personal information and task summary</p>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!isLoading">
+    <!-- Profile Information -->
+    <div class="col-lg-4">
+      <div class="profile-card" @slideIn>
+        <div class="profile-card-header">
+          <div
+            class="profile-avatar"
+            [ngClass]="{
+              'avatar-male': !user?.gender,
+              'avatar-female': user?.gender
+            }"
+          >
+            <span
+              >{{ user?.firstName?.charAt(0)
+              }}{{ user?.lastName?.charAt(0) }}</span
+            >
+          </div>
+          <div class="profile-title">
+            <h2>{{ user?.firstName }} {{ user?.lastName }}</h2>
+            <span class="user-email">{{ user?.email }}</span>
+          </div>
+        </div>
+
+        <div class="profile-card-body">
+          <!-- View Mode -->
+          <div class="profile-info" *ngIf="!isEditing">
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-person"></i>
+                <span>Full Name</span>
+              </div>
+              <div class="info-value">
+                {{ user?.firstName }} {{ user?.lastName }}
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-envelope"></i>
+                <span>Email</span>
+              </div>
+              <div class="info-value">{{ user?.email }}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-telephone"></i>
+                <span>Phone</span>
+              </div>
+              <div class="info-value">{{ user?.phone }}</div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">
+                <i class="bi bi-gender-ambiguous"></i>
+                <span>Gender</span>
+              </div>
+              <div class="info-value">{{ getGenderLabel() }}</div>
+            </div>
+          </div>
+
+          <!-- Edit Mode -->
+          <form class="profile-edit-form" *ngIf="isEditing">
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="firstName"
+                [(ngModel)]="tempUser!.firstName"
+                name="firstName"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="lastName"
+                [(ngModel)]="tempUser!.lastName"
+                name="lastName"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                [(ngModel)]="tempUser!.email"
+                name="email"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone</label>
+              <input
+                type="tel"
+                class="form-control"
+                id="phone"
+                [(ngModel)]="tempUser!.phone"
+                name="phone"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label d-block">Gender</label>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="maleGender"
+                  name="gender"
+                  [value]="true"
+                  [(ngModel)]="tempUser!.gender"
+                />
+                <label class="form-check-label" for="maleGender">Male</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="femaleGender"
+                  name="gender"
+                  [value]="false"
+                  [(ngModel)]="tempUser!.gender"
+                />
+                <label class="form-check-label" for="femaleGender"
+                  >Female</label
+                >
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Summary -->
+    <div class="col-lg-8">
+      <div class="row">
+        <!-- Summary Cards -->
+        <div
+          class="col-md-6 col-lg-4 mb-4"
+          *ngFor="
+            let statCard of [
+              {
+                title: 'Total Tasks',
+                value: taskSummary.total,
+                icon: 'bi-list-task',
+                class: 'total'
+              },
+              {
+                title: 'Completed',
+                value: taskSummary.completed,
+                icon: 'bi-check-circle',
+                class: 'completed'
+              },
+              {
+                title: 'In Progress',
+                value: taskSummary.inProgress,
+                icon: 'bi-clock-history',
+                class: 'in-progress'
+              }
+            ]
+          "
+          @itemsAnimation
+        >
+          <div class="stat-card {{ statCard.class }}">
+            <div class="stat-icon">
+              <i class="bi {{ statCard.icon }}"></i>
+            </div>
+            <div class="stat-content">
+              <p>{{ statCard.title }}</p>
+              <h3>
+                <app-animated-counter
+                  [value]="statCard.value"
+                ></app-animated-counter>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Task Status Chart -->
+        <div class="col-md-6 mb-4">
+          <div class="chart-card" @slideIn>
+            <h3 class="chart-title">Task Status Distribution</h3>
+            <div class="task-completion">
+              <div class="completion-percentage">
+                <div class="percentage-display">
+                  {{ getCompletionPercentage() }}%
+                </div>
+                <div class="completion-label">Completed</div>
+              </div>
+              <div class="completion-progress">
+                <div class="progress">
+                  <div
+                    class="progress-bar bg-success"
+                    role="progressbar"
+                    [style.width.%]="getCompletionPercentage()"
+                    [attr.aria-valuenow]="getCompletionPercentage()"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+                <div class="task-count">
+                  {{ taskSummary.completed }} of {{ taskSummary.total }} tasks
+                </div>
+              </div>
+            </div>
+            <div class="status-chart">
+              <!-- In a real app, use a chart library like ngx-charts -->
+              <div class="chart-placeholder">
+                <div class="chart-legend">
+                  <div
+                    class="legend-item"
+                    *ngFor="
+                      let item of ['Completed', 'In Progress', 'Pending'];
+                      let i = index
+                    "
+                  >
+                    <div
+                      class="legend-color"
+                      [ngStyle]="{ 'background-color': chartOptions.colors[i] }"
+                    ></div>
+                    <div class="legend-label">{{ item }}</div>
+                    <div class="legend-value">
+                      {{ chartOptions.series[0].data[i] }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Categories -->
+        <div class="col-md-6 mb-4">
+          <div class="categories-card" @slideIn>
+            <h3 class="chart-title">Task Categories</h3>
+            <div class="categories-list" @itemsAnimation>
+              <div
+                class="category-item"
+                *ngFor="let category of getCategoryArray()"
+              >
+                <div class="category-info">
+                  <div
+                    class="category-color"
+                    [style.background-color]="category.color"
+                  ></div>
+                  <div class="category-name">{{ category.name }}</div>
+                </div>
+                <div class="category-count">{{ category.count }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

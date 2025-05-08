@@ -1,0 +1,26 @@
+// app.component.scss
+.app-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a1f35 0%, #101425 100%);
+  }
+  
+  .content-container {
+    flex: 1;
+    transition: all 0.3s ease;
+    padding: 20px;
+    overflow-y: auto;
+    
+    &.expanded {
+        margin-left: 80px;
+    }
+}
+
+.content-wrapper {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}

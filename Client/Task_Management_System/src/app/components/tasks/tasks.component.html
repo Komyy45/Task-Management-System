@@ -1,0 +1,130 @@
+<div class="tasks-container">
+  <div class="tasks-header" @fadeIn>
+    <h1>Task Management</h1>
+    <a class="btn btn-primary add-task-btn" routerLink="/app/tasks/add">
+      <i class="bi bi-plus-lg"></i> New Task
+    </a>
+  </div>
+
+  <div class="filters-container" @fadeIn>
+    <div class="search-bar">
+      <i class="bi bi-search"></i>
+      <input
+        type="text"
+        placeholder="Search tasks..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="applyFilters()"
+      />
+    </div>
+
+    <div class="filters">
+      <div class="filter-item">
+        <label>Category</label>
+        <select [(ngModel)]="selectedCategory" class="form-select">
+          <option value="">All Categories</option>
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label>Priority</label>
+        <select [(ngModel)]="selectedPriority" class="form-select">
+          <option value="">All Priorities</option>
+          <option *ngFor="let priority of priorities" [value]="priority">
+            {{ priority | titlecase }}
+          </option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary filter-btn" (click)="applyFilters()">
+        Apply Filters
+      </button>
+
+      <button
+        class="btn btn-outline-secondary reset-btn"
+        (click)="resetFilters()"
+      >
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <div class="tasks-list" @listAnimation>
+    <div *ngIf="loading" class="loading-spinner">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && tasks.length === 0" class="no-tasks">
+      <i class="bi bi-inbox"></i>
+      <p>No tasks found. Try adjusting your filters or add a new task.</p>
+    </div>
+
+    <div
+      *ngFor="let task of tasks"
+      class="task-item"
+      [class.completed]="task.completed"
+    >
+      <div class="task-checkbox">
+        <input
+          type="checkbox"
+          [checked]="task.completed"
+          (change)="toggleTaskCompletion(task)"
+          id="task-{{ task._id }}"
+        />
+        <label for="task-{{ task._id }}" class="checkmark"></label>
+      </div>
+
+      <div class="task-content">
+        <div class="task-header">
+          <h3 class="task-title">{{ task.title }}</h3>
+          <span
+            class="task-priority"
+            [ngClass]="getPriorityClass(task.priority)"
+          >
+            {{ task.priority }}
+          </span>
+        </div>
+
+        <p class="task-description">{{ task.description }}</p>
+
+        <div class="task-footer">
+          <div class="task-category">
+            <span class="category-badge">{{ task.category }}</span>
+          </div>
+
+          <div class="task-due-date">
+            <i class="bi bi-calendar-event"></i>
+            <span>{{ task.dueDate | date : "mediumDate" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-actions">
+        <button
+          class="action-btn edit"
+          [routerLink]="['/app/tasks/update', task._id]"
+        >
+          <i class="bi bi-pencil"></i>
+        </button>
+        <button class="action-btn delete" (click)="onDeleteTask(task._id)">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination-container" @fadeIn>
+    <ngb-pagination
+      [collectionSize]="totalTasks"
+      [(page)]="currentPage"
+      [pageSize]="pageSize"
+      [maxSize]="5"
+      (pageChange)="onPageChange($event)"
+    >
+    </ngb-pagination>
+  </div>
+</div>

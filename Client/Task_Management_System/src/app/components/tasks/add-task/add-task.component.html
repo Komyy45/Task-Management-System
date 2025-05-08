@@ -1,0 +1,12 @@
+<div class="add-task-container" @fadeIn>
+  <app-task-form
+    [isSubmitting]="isSubmitting"
+    [submitSuccess]="submitSuccess"
+    [submitError]="submitError"
+    [submitButtonText]="'Create Task'"
+    [formTitle]="'Create New Task'"
+    (formSubmit)="onSubmit($event)"
+    (formCancel)="onCancel()"
+    (formReset)="onReset()"
+  ></app-task-form>
+</div>

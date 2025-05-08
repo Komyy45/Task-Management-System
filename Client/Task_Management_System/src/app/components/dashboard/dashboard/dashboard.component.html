@@ -1,0 +1,80 @@
+<div class="home-container">
+  <div class="header" @fadeInUp>
+    <div class="greeting">
+      <h1>{{ getGreeting() }}, {{ user?.firstName }}</h1>
+      <p>Here's your task overview for today</p>
+    </div>
+    <div class="date-info">
+      <div class="current-date">{{ today | date : "fullDate" }}</div>
+    </div>
+  </div>
+
+  <div class="stats-container" @itemsAnimation>
+    <div class="stat-card">
+      <div class="stat-icon completed">
+        <i class="bi bi-check-circle-fill"></i>
+      </div>
+      <div class="stat-content">
+        <h2>
+          {{ taskStats.completed }}
+        </h2>
+        <p>Completed Tasks</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon progress">
+        <i class="bi bi-hourglass-split"></i>
+      </div>
+      <div class="stat-content">
+        <h2>
+          {{ taskStats.inProgress }}
+        </h2>
+        <p>In Progress</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon upcoming">
+        <i class="bi bi-calendar-event"></i>
+      </div>
+      <div class="stat-content">
+        <h2>
+          {{ taskStats.upcomingDue }}
+        </h2>
+        <p>Due Soon</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-row">
+    <div class="tasks-overview" @fadeInUp>
+      <h2>Recent Tasks</h2>
+      <div class="task-list" @itemsAnimation>
+        <app-task-card
+          *ngFor="let task of recentTasks"
+          [task]="task"
+        ></app-task-card>
+        <div class="view-all">
+          <a routerLink="/app/tasks"
+            >View All Tasks <i class="bi bi-arrow-right"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-chart" @fadeInUp>
+      <h2>Task Categories</h2>
+      <div class="category-list" @itemsAnimation>
+        <div class="category-item" *ngFor="let cat of categoryStats">
+          <div
+            class="category-color"
+            [style.background-color]="getCategoryColor(cat.category)"
+          ></div>
+          <div class="category-name">{{ cat.category }}</div>
+          <div class="category-count">{{ cat.count }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

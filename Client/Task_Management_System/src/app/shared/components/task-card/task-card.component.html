@@ -1,0 +1,32 @@
+<div
+  class="task-card"
+  [@cardState]="cardState"
+  (mouseenter)="toggleHover()"
+  (mouseleave)="toggleHover()"
+  [ngClass]="getStatusClass()"
+>
+  <div class="card-header">
+    <div class="status-indicator">
+      <i [class]="getStatusIcon()"></i>
+    </div>
+    <div class="priority-badge" [ngClass]="getPriorityClass()">
+      {{ task.priority | titlecase }}
+    </div>
+  </div>
+
+  <div class="card-body">
+    <h3 class="task-title">{{ task.title }}</h3>
+    <p class="task-description">{{ task.description }}</p>
+  </div>
+
+  <div class="card-footer">
+    <div class="due-date">
+      <i class="bi bi-calendar-event"></i>
+      <span>{{ getRelativeDueDate() }}</span>
+    </div>
+
+    <div class="task-category">
+      <span class="category-pill">{{ task.category }}</span>
+    </div>
+  </div>
+</div>

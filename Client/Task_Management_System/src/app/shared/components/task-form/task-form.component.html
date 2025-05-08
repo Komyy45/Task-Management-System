@@ -1,0 +1,227 @@
+<div class="task-form-container" @fadeIn>
+  <h2 class="form-title">{{ formTitle }}</h2>
+
+  <!-- Success Message -->
+  <div *ngIf="submitSuccess" class="alert alert-success" @slideInUp>
+    Task {{ task ? 'updated' : 'created' }} successfully! Redirecting to tasks list...
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="submitError" class="alert alert-danger" @slideInUp>
+    {{ submitError }}
+  </div>
+
+  <form
+    [formGroup]="taskForm"
+    (ngSubmit)="onSubmit()"
+    class="task-form"
+    @slideInUp
+  >
+    <!-- Title Field -->
+    <div class="form-group">
+      <label for="title">Task Title*</label>
+      <input
+        type="text"
+        id="title"
+        formControlName="title"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': f['title'].touched && f['title'].errors }"
+        placeholder="Enter task title"
+      />
+      <div
+        *ngIf="f['title'].touched && f['title'].errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="f['title'].errors['required']">Title is required</div>
+        <div *ngIf="f['title'].errors['minlength']">
+          Title must be at least 3 characters
+        </div>
+        <div *ngIf="f['title'].errors['maxlength']">
+          Title cannot exceed 100 characters
+        </div>
+      </div>
+    </div>
+
+    <!-- Description Field -->
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': f['description'].touched && f['description'].errors
+        }"
+        rows="3"
+        placeholder="Enter task description"
+      ></textarea>
+      <div
+        *ngIf="f['description'].touched && f['description'].errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="f['description'].errors['maxlength']">
+          Description cannot exceed 500 characters
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <!-- Due Date Field -->
+      <div class="form-group col-md-4">
+        <label for="dueDate">Due Date*</label>
+        <input
+          type="date"
+          id="dueDate"
+          formControlName="dueDate"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid': f['dueDate'].touched && f['dueDate'].errors
+          }"
+        />
+        <div
+          *ngIf="f['dueDate'].touched && f['dueDate'].errors"
+          class="invalid-feedback"
+        >
+          <div *ngIf="f['dueDate'].errors['required']">
+            Due date is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Priority Field -->
+      <div class="form-group col-md-4">
+        <label for="priority">Priority*</label>
+        <select
+          id="priority"
+          formControlName="priority"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid': f['priority'].touched && f['priority'].errors
+          }"
+        >
+          <option *ngFor="let priority of priorities" [value]="priority">
+            {{ priority | titlecase }}
+          </option>
+        </select>
+        <div
+          *ngIf="f['priority'].touched && f['priority'].errors"
+          class="invalid-feedback"
+        >
+          <div *ngIf="f['priority'].errors['required']">
+            Priority is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Field -->
+      <div class="form-group col-md-4">
+        <label for="category">Category*</label>
+        <select
+          id="category"
+          formControlName="category"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid': f['category'].touched && f['category'].errors
+          }"
+        >
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+        </select>
+        <div
+          *ngIf="f['category'].touched && f['category'].errors"
+          class="invalid-feedback"
+        >
+          <div *ngIf="f['category'].errors['required']">
+            Category is required
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Field -->
+    <div class="form-group">
+      <label>Status*</label>
+      <div class="status-options">
+        <div *ngFor="let status of statuses" class="status-option">
+          <input
+            type="radio"
+            [id]="'status-' + status"
+            formControlName="status"
+            [value]="status"
+          />
+          <label [for]="'status-' + status" class="status-label">
+            {{ status | titlecase }}
+          </label>
+        </div>
+      </div>
+      <div
+        *ngIf="f['status'].touched && f['status'].errors"
+        class="invalid-feedback d-block"
+      >
+        <div *ngIf="f['status'].errors['required']">Status is required</div>
+      </div>
+    </div>
+
+    <!-- Task Preview -->
+    <div class="form-group">
+      <label>Task Preview</label>
+      <div class="task-preview">
+        <div
+          class="preview-card"
+          [style.borderLeftColor]="
+            priorityColors[taskForm.value.priority] || '#ccc'
+          "
+        >
+          <div class="preview-header">
+            <div
+              class="preview-category"
+              [style.backgroundColor]="
+                categoryColors[taskForm.value.category] || '#ccc'
+              "
+            >
+              {{ taskForm.value.category }}
+            </div>
+            <div class="preview-priority">
+              {{ taskForm.value.priority | titlecase }}
+            </div>
+          </div>
+          <div class="preview-title">{{ taskForm.value.title || "Task Title" }}</div>
+          <div class="preview-description">
+            {{ taskForm.value.description || "No description provided" }}
+          </div>
+          <div class="preview-footer">
+            <div class="preview-date">
+              <i class="bi bi-calendar"></i>
+              Due: {{ taskForm.value.dueDate | date : "mediumDate" }}
+            </div>
+            <div class="preview-status">
+              {{ taskForm.value.status | titlecase }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="onReset()"
+      >
+        Reset
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+        <span
+          *ngIf="isSubmitting"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        {{ submitButtonText }}
+      </button>
+    </div>
+  </form>
+</div>

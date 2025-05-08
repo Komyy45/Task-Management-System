@@ -1,0 +1,29 @@
+<div class="update-task-container" @fadeIn>
+  <div *ngIf="isLoading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <p>Loading task data...</p>
+  </div>
+
+  <div *ngIf="!isLoading && !task" class="error-message">
+    <div class="alert alert-danger">
+      Task not found or could not be loaded. Please try again.
+    </div>
+    <button class="btn btn-primary" (click)="loadTask()">Retry</button>
+    <button class="btn btn-secondary" (click)="onCancel()">Back to Tasks</button>
+  </div>
+
+  <app-task-form
+    *ngIf="!isLoading && task"
+    [task]="task"
+    [isSubmitting]="isSubmitting"
+    [submitSuccess]="submitSuccess"
+    [submitError]="submitError"
+    [submitButtonText]="'Update Task'"
+    [formTitle]="'Update Task'"
+    (formSubmit)="onSubmit($event)"
+    (formCancel)="onCancel()"
+    (formReset)="onReset()"
+  ></app-task-form>
+</div>

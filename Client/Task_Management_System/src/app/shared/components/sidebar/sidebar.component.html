@@ -1,0 +1,28 @@
+<div class="sidebar" [@slideInOut]="sidebarState">
+  <div class="logo-container">
+    <div class="logo">
+      <i class="bi bi-lightning-charge-fill"></i>
+      <span *ngIf="!collapsed" [@fadeIn]>Nova</span>
+    </div>
+    <button class="toggle-btn" (click)="toggle()">
+      <i
+        class="bi"
+        [ngClass]="collapsed ? 'bi-chevron-right' : 'bi-chevron-left'"
+      ></i>
+    </button>
+  </div>
+
+  <div class="menu-items">
+    <div
+      *ngFor="let item of menuItems"
+      class="menu-item"
+      [ngClass]="{ active: isActive(item.route), collapsed: collapsed }"
+      (click)="navigate(item.route)"
+    >
+      <div class="icon-container">
+        <i class="bi {{ item.icon }}"></i>
+      </div>
+      <span *ngIf="!collapsed" [@fadeIn]>{{ item.label }}</span>
+    </div>
+  </div>
+</div>
