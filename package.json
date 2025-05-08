@@ -1,0 +1,26 @@
+{
+  "name": "task-management-system",
+  "version": "1.0.0",
+  "description": "A full-stack task management application built with Angular and Node.js",
+  "main": "index.js",
+  "scripts": {
+    "start:server": "cd Server && npm start",
+    "start:client": "cd Client/Task_Management_System && ng serve",
+    "install:server": "cd Server && npm install",
+    "install:client": "cd Client/Task_Management_System && npm install",
+    "install": "npm run install:server && npm run install:client",
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\""
+  },
+  "keywords": [
+    "angular",
+    "node",
+    "express",
+    "mongodb",
+    "task-management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
