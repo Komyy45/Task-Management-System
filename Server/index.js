@@ -24,7 +24,7 @@ mongoose.connect(process.env.DATABASE_CONNECTION);
 app.use(`${STATIC_SEGMENT}/auth`, AUTH_ROUTES);
 app.use(`${STATIC_SEGMENT}/task`, authenticate, TASK_ROUTES);
 
-// فقط في حالة عدم كوننا في بيئة الاختبار يتم تشغيل السيرفر
+
 if (require.main === module) {
   app.listen(5000, () => console.log("Server is Listening!"));
 }

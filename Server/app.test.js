@@ -1,12 +1,12 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const User = require("./models/user.js"); 
-const app = require("./index");  
+const User = require("./models/user.js");
+const app = require("./index");
 
 process.env.JWT_SECRET = "test-secret";
 
 beforeAll(async () => {
-  const databaseUrl = process.env.DATABASE_CONNECTION || 'mongodb://localhost:27017/testdb'; 
+  const databaseUrl = process.env.DATABASE_CONNECTION || 'mongodb://localhost:27017/testdb';
   await mongoose.connect(databaseUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -31,11 +31,29 @@ describe("POST /api/auth/register", () => {
     };
 
     const response = await request(app)
-      .post("/api/auth/register") 
+      .post("/api/auth/register")
       .send(newUser);
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("message", "User registered successfully!");
+  });
+
+  it("should return 400 for duplicate email", async () => {
+    const newUser = {
+      firstName: "John",
+      lastName: "Doe",
+      email: "johndoe@example.com",
+      password: "password123",
+    };
+
+    await request(app).post("/api/auth/register").send(newUser);
+
+    const response = await request(app)
+      .post("/api/auth/register")
+      .send(newUser);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("message", "User already exists");
   });
 });
 
@@ -68,7 +86,21 @@ describe("POST /api/auth/login", () => {
   it("should return invalid credentials for incorrect password", async () => {
     const userCredentials = {
       email: "johndoe@example.com",
-      password: "wrongpassword",  
+      password: "wrongpassword",
+    };
+
+    const response = await request(app)
+      .post("/api/auth/login")
+      .send(userCredentials);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("message", "Invalid credentials");
+  });
+
+  it("should return 401 for non-existing email", async () => {
+    const userCredentials = {
+      email: "nonexistent@example.com",
+      password: "password123",
     };
 
     const response = await request(app)
@@ -81,7 +113,7 @@ describe("POST /api/auth/login", () => {
 });
 
 describe("GET /api/auth/user", () => {
-  let token; 
+  let token;
 
   beforeEach(async () => {
     await request(app).post("/api/auth/register").send({
